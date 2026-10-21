@@ -515,6 +515,7 @@ h4,
   width: 100%;
   height: 100%;
   pointer-events: none;
+  background: #E2E8F0 url('assets/suburban-after.webp') center center / cover no-repeat;
 }
 
 #hero-transformation-canvas,
@@ -3695,5 +3696,97 @@ body.backoffice-active .backoffice-shell {
   .hero-sticky-stage {
     position: relative !important;
     transform: none !important;
+  }
+}
+
+/* =========================================================================
+   SMS AI AGENT & MANUAL OFFICE-HOURS HANDOVER CONTROLS
+   ========================================================================= */
+.bo-handover-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+}
+
+.bo-handover-status-bar.is-manual {
+  background: rgba(245, 158, 11, 0.14);
+  border-left: 3px solid #F59E0B;
+}
+
+.bo-handover-status-bar.is-autopilot {
+  background: rgba(16, 185, 129, 0.14);
+  border-left: 3px solid #10B981;
+}
+
+.bo-handover-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bo-handover-copy strong {
+  color: #F8FAFC;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+}
+
+.bo-handover-copy span {
+  color: #CBD5E1;
+  font-size: 0.74rem;
+}
+
+.bo-handover-switch-btn {
+  padding: 6px 12px;
+  font-size: 0.74rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bo-inbound-sim-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(15, 23, 42, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bo-sim-label {
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #7DD3FC;
+  white-space: nowrap;
+}
+
+.bo-sim-input {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(7, 9, 14, 0.85);
+  color: #F8FAFC;
+  font-size: 0.78rem;
+}
+
+.bo-sim-btn {
+  padding: 6px 12px;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .nav-sms-badge {
+    display: none;
+  }
+  .bo-handover-status-bar,
+  .bo-inbound-sim-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

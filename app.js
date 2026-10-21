@@ -313,47 +313,10 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   }
 
   /* =========================================================================
-     4. BUILD 60-FRAME PROGRESSIVE BUFFER FOR SUB-FRAME ALPHA BLENDING
+     4. DIRECT HIGH-RES HERO IMAGE COMPOSITING (ZERO OFFSCREEN GPU MEMORY BLOAT)
      ========================================================================= */
   function buildSynthesizedHeroFrames() {
     heroFrames.length = 0;
-    const offWidth = 960;
-    const offHeight = 540;
-
-    for (let i = 0; i < TOTAL_SYNTH_FRAMES; i++) {
-      const p = i / (TOTAL_SYNTH_FRAMES - 1);
-      const c = document.createElement('canvas');
-      c.width = offWidth;
-      c.height = offHeight;
-      const cctx = c.getContext('2d');
-
-      if (heroImagesLoaded && heroBeforeImg && heroAfterImg) {
-        // Draw cover-fitted Before image
-        drawCoverImage(cctx, heroBeforeImg, offWidth, offHeight);
-
-        // Progressive architectural transformation reveal with soft feathered transition + cross-blend
-        const sweepX = offWidth * p;
-        const feather = offWidth * 0.09;
-
-        // Also blend global subtle architectural lighting progression
-        cctx.save();
-        cctx.globalAlpha = Math.pow(p, 1.35) * 0.35;
-        drawCoverImage(cctx, heroAfterImg, offWidth, offHeight);
-        cctx.restore();
-
-        // Clipped directional reveal of After state behind the 3D scan wave
-        cctx.save();
-        cctx.beginPath();
-        cctx.rect(0, 0, Math.max(0, sweepX + feather), offHeight);
-        cctx.clip();
-        drawCoverImage(cctx, heroAfterImg, offWidth, offHeight);
-        cctx.restore();
-      } else {
-        drawProceduralArchitecture(cctx, offWidth, offHeight, p, { mode: 'static' });
-      }
-
-      heroFrames.push(c);
-    }
   }
 
   function drawCoverImage(ctx, img, canvasW, canvasH) {
@@ -1703,6 +1666,9 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
 
   let selectedBoThreadId = 'vance-cedar';
   let activeBoFilter = 'all';
+  // Default to 'Human' (Manual / Office Hours Employee Handover) so the AI never
+  // auto-replies over an employee unless switched to 'AI' (24/7 AI Auto-Pilot).
+  let activeCopilotMode = 'Human';
 
   const boThreadListEl = document.getElementById('boThreadList');
   const boThreadCountEl = document.getElementById('boThreadCount');
@@ -1717,6 +1683,61 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   const boEditDraftBtn = document.getElementById('boEditDraftBtn');
   const boComposerForm = document.getElementById('boComposerForm');
   const boComposerInput = document.getElementById('boComposerInput');
+  const boTopSmsModeLabelEl = document.getElementById('boTopSmsModeLabel');
+  const boHandoverBannerEl = document.getElementById('boHandoverBanner');
+  const boHandoverTitleEl = document.getElementById('boHandoverTitle');
+  const boHandoverDescEl = document.getElementById('boHandoverDesc');
+  const boQuickToggleAiBtn = document.getElementById('boQuickToggleAiBtn');
+  const boSimulateSmsForm = document.getElementById('boSimulateSmsForm');
+  const boSimulateSmsInput = document.getElementById('boSimulateSmsInput');
+
+  function setSmsHandoverMode(mode) {
+    activeCopilotMode = mode; // 'Human' (Manual/Office Hours) | 'AI' (Auto-Pilot) | 'Draft'
+    document.querySelectorAll('.bo-copilot-btn').forEach((btn) => {
+      btn.classList.toggle('is-active', btn.getAttribute('data-copilot-mode') === mode);
+    });
+
+    if (boTopSmsModeLabelEl) {
+      if (mode === 'AI') {
+        boTopSmsModeLabelEl.textContent = '🤖 AI Auto-Pilot (24/7 Instant Auto-Reply)';
+      } else if (mode === 'Draft') {
+        boTopSmsModeLabelEl.textContent = '📝 AI Co-Pilot (Draft for Approval)';
+      } else {
+        boTopSmsModeLabelEl.textContent = '✋ Manual (Office Hours / Employee Handover)';
+      }
+    }
+
+    if (boHandoverBannerEl && boHandoverTitleEl && boHandoverDescEl && boQuickToggleAiBtn) {
+      boHandoverBannerEl.classList.toggle('is-manual', mode !== 'AI');
+      boHandoverBannerEl.classList.toggle('is-autopilot', mode === 'AI');
+      if (mode === 'AI') {
+        boHandoverTitleEl.textContent = '🤖 24/7 AI AUTO-PILOT ACTIVE (AUTOMATIC SMS REPLIES ON)';
+        boHandoverDescEl.textContent =
+          'Incoming customer texts are answered automatically by the Alfred AI SMS Agent. Sending a manual reply below automatically hands the thread back to Manual Mode.';
+        boQuickToggleAiBtn.textContent = 'Switch to ✋ Manual (Office Hours) →';
+      } else if (mode === 'Draft') {
+        boHandoverTitleEl.textContent = '📝 AI CO-PILOT DRAFT MODE (HUMAN APPROVAL REQUIRED)';
+        boHandoverDescEl.textContent =
+          'Incoming texts are analyzed by AI and prepared as a draft below, waiting for 1-click Principal or Employee approval before sending.';
+        boQuickToggleAiBtn.textContent = 'Switch to 🤖 AI Auto-Pilot →';
+      } else {
+        boHandoverTitleEl.textContent = '✋ MANUAL / OFFICE HOURS MODE (DEFAULT)';
+        boHandoverDescEl.textContent =
+          'Incoming customer texts route here for employee/owner reply. Automatic AI SMS replies are paused so your team never gets talked over.';
+        boQuickToggleAiBtn.textContent = 'Switch to 🤖 AI Auto-Pilot →';
+      }
+    }
+
+    const apiMode = mode === 'AI' ? 'ai_autopilot' : mode === 'Draft' ? 'draft' : 'manual';
+    if (window.TiberiusTelephony) {
+      window.TiberiusTelephony.saveConfig({ smsRoutingMode: apiMode });
+    }
+    fetch('/api/sms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'set_mode', mode: apiMode })
+    }).catch(() => {});
+  }
 
   const boSumScopeEl = document.getElementById('boSumScope');
   const boSumBudgetEl = document.getElementById('boSumBudget');
@@ -1836,6 +1857,26 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
 
   function addNewBackofficeLead(lead) {
     const newId = 'lead-' + Date.now();
+    const isAutoPilot = activeCopilotMode === 'AI';
+    const suggestedReply = `Hi ${lead.name}! I reviewed your "${lead.scope}" inquiry (${lead.budget} turnkey ballpark, ${lead.timeline}). Can we bring our 3D LiDAR scanner out this Thursday at 2:00 PM for your complimentary feasibility study?`;
+
+    const initialMessages = [
+      {
+        sender: 'homeowner',
+        meta: `${lead.name} · Inbound SMS / Estimator · Just now`,
+        text: lead.visionText || lead.scope,
+        attachment: '📷 Property Scope & Ballpark Queued for 3D LiDAR Scan'
+      }
+    ];
+
+    if (isAutoPilot) {
+      initialMessages.push({
+        sender: 'ai-reply',
+        meta: 'Alfred AI SMS Agent · 24/7 Auto-Replied via SMS · Just now',
+        text: suggestedReply
+      });
+    }
+
     const newThread = {
       id: newId,
       name: lead.name || 'New Estate Inquiry',
@@ -1848,23 +1889,11 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
       sqft: `${calcState.sqft.toLocaleString('en-US')} sq ft · Custom Site`,
       grade: 'Organic Woodland Luxury',
       architect: 'Julian Vance, AIA',
-      status: 'Draft',
-      badgeLabel: 'Needs Approval',
+      status: isAutoPilot ? 'AI' : 'Draft',
+      badgeLabel: isAutoPilot ? '🤖 AI Auto-Replied' : '✋ Manual / Office Hours',
       timeAgo: 'Just now',
-      draftText: `Hi ${lead.name}! I reviewed your "${lead.scope}" inquiry (${lead.budget} turnkey ballpark). Can we bring our 3D LiDAR scanner out this Thursday at 2:00 PM for your complimentary feasibility study?`,
-      messages: [
-        {
-          sender: 'homeowner',
-          meta: `${lead.name} · Instant Estimator · Just now`,
-          text: lead.visionText || lead.scope,
-          attachment: '📷 Property Scope & Ballpark Queued for 3D LiDAR Scan'
-        },
-        {
-          sender: 'ai-reply',
-          meta: 'Alfred AI Architect Co-Pilot · Instant SMS Dispatched · Just now',
-          text: `Prepared preliminary turnkey range of ${lead.budget} (${lead.timeline}) with projected ${lead.lift} neighborhood value lift.`
-        }
-      ]
+      draftText: isAutoPilot ? '' : suggestedReply,
+      messages: initialMessages
     };
 
     boThreads.unshift(newThread);
@@ -1872,11 +1901,33 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
     renderBoThreadList();
     renderBoActiveThread();
 
+    // Dispatch to Serverless SMS Backend (/api/sms) respecting Manual vs AI Auto-Pilot mode
+    const apiMode = isAutoPilot ? 'ai_autopilot' : activeCopilotMode === 'Draft' ? 'draft' : 'manual';
+    fetch('/api/sms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'inbound_lead',
+        mode: apiMode,
+        name: lead.name,
+        phone: lead.phone,
+        scope: lead.scope,
+        budget: lead.budget,
+        timeline: lead.timeline,
+        lift: lead.lift,
+        visionText: lead.visionText
+      })
+    }).catch(() => {});
+
     if (toastTitleEl) {
-      toastTitleEl.textContent = `Lead Synced → 3-Pane Back-Office (${lead.scope})`;
+      toastTitleEl.textContent = isAutoPilot
+        ? `🤖 AI Auto-Answered SMS → Back-Office (${lead.scope})`
+        : `✋ Queued for Manual Office-Hours Reply → Back-Office`;
     }
     if (toastMessageEl) {
-      toastMessageEl.textContent = `Added ${lead.name} (${lead.budget}) to Principal Architect queue.`;
+      toastMessageEl.textContent = isAutoPilot
+        ? `Alfred AI automatically replied to ${lead.name} (${lead.budget}).`
+        : `Held automatic AI reply so your team can respond manually to ${lead.name}.`;
     }
     if (crossPillarToast) {
       crossPillarToast.hidden = false;
@@ -1918,6 +1969,20 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   }
 
   function initBackofficeRoom() {
+    // Sync initial SMS routing mode from saved telephony config (defaults to Manual / 'Human')
+    if (window.TiberiusTelephony) {
+      const cfg = window.TiberiusTelephony.getConfig();
+      const initialMode =
+        cfg.smsRoutingMode === 'ai_autopilot'
+          ? 'AI'
+          : cfg.smsRoutingMode === 'draft'
+            ? 'Draft'
+            : 'Human';
+      setSmsHandoverMode(initialMode);
+    } else {
+      setSmsHandoverMode('Human');
+    }
+
     document.querySelectorAll('[data-open-backoffice]').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1972,30 +2037,115 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
       });
     });
 
-    // Co-Pilot mode buttons
+    // Co-Pilot / Manual Office-Hours Handover mode buttons
     document.querySelectorAll('.bo-copilot-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.bo-copilot-btn').forEach((b) => {
-          b.classList.toggle('is-active', b === btn);
-        });
+        const mode = btn.getAttribute('data-copilot-mode') || 'Human';
+        setSmsHandoverMode(mode);
       });
     });
+
+    // Quick toggle button on the handover banner
+    if (boQuickToggleAiBtn) {
+      boQuickToggleAiBtn.addEventListener('click', () => {
+        setSmsHandoverMode(activeCopilotMode === 'AI' ? 'Human' : 'AI');
+      });
+    }
+
+    // Live Inbound Customer SMS Simulator Bar
+    if (boSimulateSmsForm && boSimulateSmsInput) {
+      boSimulateSmsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const incomingText =
+          boSimulateSmsInput.value.trim() ||
+          'Can you give me a ballpark for a steel & glass great room addition and when we can schedule a scan?';
+        const thread = getSelectedThread();
+        if (!thread) return;
+
+        boSimulateSmsInput.value = '';
+        thread.messages.push({
+          sender: 'homeowner',
+          meta: `${thread.name} · Inbound SMS · Just now`,
+          text: incomingText
+        });
+        thread.timeAgo = 'Just now';
+
+        const isAutoPilot = activeCopilotMode === 'AI';
+        const apiMode = isAutoPilot ? 'ai_autopilot' : activeCopilotMode === 'Draft' ? 'draft' : 'manual';
+
+        if (!isAutoPilot) {
+          // MANUAL / OFFICE HOURS MODE: Hold AI auto-reply so employee/owner can respond manually
+          thread.status = 'Draft';
+          thread.badgeLabel = '✋ Manual / Office Hours';
+          thread.draftText = `Hi ${thread.name.split(' ')[0]}! Regarding "${incomingText}": for your ${thread.program} (${thread.budget} turnkey tier), our structural team can walk the property this Thursday at 2:00 PM for a complimentary 3D LiDAR scan. Does that time work?`;
+          renderBoThreadList();
+          renderBoActiveThread();
+        } else {
+          // AI AUTO-PILOT MODE: Automatically answer the incoming text via AI Agent
+          renderBoThreadList();
+          renderBoActiveThread();
+          fetch('/api/sms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'inbound_sms',
+              mode: apiMode,
+              name: thread.name,
+              phone: thread.phone,
+              scope: thread.program,
+              budget: thread.budget,
+              timeline: thread.timeline,
+              lift: thread.lift,
+              message: incomingText
+            })
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              const replyText =
+                (data && data.aiReply) ||
+                `Hi ${thread.name.split(' ')[0]}! This is Alfred, Aether's AI Architectural Desk. For your ${thread.program} (${thread.budget} turnkey tier, ${thread.timeline}), we can have Principal Architect ${thread.architect} on-site this Thursday at 2:00 PM for a complimentary 3D LiDAR scan. Shall I lock that in?`;
+              thread.messages.push({
+                sender: 'ai-reply',
+                meta: 'Alfred AI SMS Agent · 24/7 Auto-Replied via SMS · Just now',
+                text: replyText
+              });
+              thread.draftText = '';
+              thread.status = 'AI';
+              thread.badgeLabel = '🤖 AI Auto-Replied';
+              renderBoThreadList();
+              renderBoActiveThread();
+            })
+            .catch(() => {});
+        }
+      });
+    }
 
     // Approve AI Draft button
     if (boApproveDraftBtn) {
       boApproveDraftBtn.addEventListener('click', () => {
         const thread = getSelectedThread();
         if (!thread || !thread.draftText) return;
+        const sentText = thread.draftText;
         thread.messages.push({
           sender: 'architect-reply',
-          meta: `Principal Architect ${thread.architect} · Approved AI SMS · Just now`,
-          text: thread.draftText
+          meta: `Principal Architect ${thread.architect} · Approved SMS Sent · Just now`,
+          text: sentText
         });
         thread.draftText = '';
         thread.status = 'AI';
-        thread.badgeLabel = 'AI Active';
+        thread.badgeLabel = 'SMS Dispatched';
         renderBoThreadList();
         renderBoActiveThread();
+
+        fetch('/api/sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'approve_draft',
+            phone: thread.phone,
+            message: sentText
+          })
+        }).catch(() => {});
       });
     }
 
@@ -2009,7 +2159,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
       });
     }
 
-    // Live Reply Composer
+    // Live Reply Composer (Manual Employee / Owner Takeover)
     if (boComposerForm && boComposerInput) {
       boComposerForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -2018,14 +2168,87 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
         const thread = getSelectedThread();
         if (!thread) return;
 
+        // CRITICAL HANDOVER GUARDRAIL: If an employee or owner sends a manual reply,
+        // automatically switch to Manual Mode so the AI never talks over them!
+        if (activeCopilotMode !== 'Human') {
+          setSmsHandoverMode('Human');
+        }
+
         thread.messages.push({
           sender: 'architect-reply',
-          meta: `Principal Architect ${thread.architect} · Direct SMS · Just now`,
+          meta: `Office Staff / ${thread.architect} · Manual SMS Reply (AI Auto-Reply Paused) · Just now`,
           text
         });
+        thread.status = 'Draft';
+        thread.badgeLabel = '✋ Manual Active';
         boComposerInput.value = '';
         renderBoThreadList();
         renderBoActiveThread();
+
+        fetch('/api/sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'manual_reply',
+            phone: thread.phone,
+            message: text
+          })
+        }).catch(() => {});
+      });
+    }
+
+    // Telephony & Retell AI / SMS Number Configuration Modal
+    const openTelephonyBtn = document.getElementById('openTelephonyConfigBtn');
+    const closeTelephonyBtn = document.getElementById('closeTelephonyModalBtn');
+    const telephonyModal = document.getElementById('telephonyConfigModal');
+    const telephonyForm = document.getElementById('telephonyConfigForm');
+    const cfgRetellVoiceInput = document.getElementById('cfgRetellVoiceInput');
+    const cfgSmsAgentInput = document.getElementById('cfgSmsAgentInput');
+    const cfgDefaultSmsModeSelect = document.getElementById('cfgDefaultSmsModeSelect');
+    const telephonySavedMsg = document.getElementById('telephonyConfigSavedMsg');
+
+    if (openTelephonyBtn && telephonyModal) {
+      openTelephonyBtn.addEventListener('click', () => {
+        if (window.TiberiusTelephony) {
+          const cfg = window.TiberiusTelephony.getConfig();
+          if (cfgRetellVoiceInput) cfgRetellVoiceInput.value = cfg.retellVoiceNumber || '+18005550199';
+          if (cfgSmsAgentInput) cfgSmsAgentInput.value = cfg.smsAgentNumber || '+18005550199';
+        }
+        if (cfgDefaultSmsModeSelect) {
+          cfgDefaultSmsModeSelect.value = activeCopilotMode;
+        }
+        if (telephonySavedMsg) telephonySavedMsg.hidden = true;
+        telephonyModal.hidden = false;
+        telephonyModal.setAttribute('aria-hidden', 'false');
+      });
+    }
+
+    if (closeTelephonyBtn && telephonyModal) {
+      closeTelephonyBtn.addEventListener('click', () => {
+        telephonyModal.hidden = true;
+        telephonyModal.setAttribute('aria-hidden', 'true');
+      });
+    }
+
+    if (telephonyForm) {
+      telephonyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newVoice = (cfgRetellVoiceInput && cfgRetellVoiceInput.value.trim()) || '+18005550199';
+        const newSms = (cfgSmsAgentInput && cfgSmsAgentInput.value.trim()) || '+18005550199';
+        const selectedMode = (cfgDefaultSmsModeSelect && cfgDefaultSmsModeSelect.value) || 'Human';
+
+        if (window.TiberiusTelephony) {
+          window.TiberiusTelephony.saveConfig({
+            retellVoiceNumber: newVoice,
+            smsAgentNumber: newSms
+          });
+        }
+        setSmsHandoverMode(selectedMode);
+
+        if (telephonySavedMsg) {
+          telephonySavedMsg.hidden = false;
+          telephonySavedMsg.textContent = `✓ Saved! Click-to-Call links now dial ${newVoice} (Retell AI) and Click-to-Text links now text ${newSms}. All visible numbers on the site remain (800) 555-0199.`;
+        }
       });
     }
 

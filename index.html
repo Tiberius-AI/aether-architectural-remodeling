@@ -153,11 +153,18 @@
           </button>
         </div>
 
-        <a href="tel:+18005550199" class="nav-phone-badge" aria-label="Call Aether Architectural Remodeling at (800) 555-0199">
+        <a href="tel:+18005550199" data-click-to-call="true" class="nav-phone-badge" aria-label="Call Aether Architectural Remodeling at (800) 555-0199">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
           </svg>
           <span>(800) 555-0199</span>
+        </a>
+
+        <a href="sms:+18005550199" data-click-to-text="true" class="nav-phone-badge nav-sms-badge" aria-label="Text Aether Architectural Remodeling">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span>Text Us</span>
         </a>
 
         <a href="#photo-estimator" class="btn-gold btn-nav-cta">Instant Photo Quote</a>
@@ -184,7 +191,8 @@
           <button type="button" class="btn-glass w-full" data-open-backoffice="true">
             Open 3-Pane Back-Office Room (4)
           </button>
-          <a href="tel:+18005550199" class="btn-glass w-full">Call (800) 555-0199</a>
+          <a href="tel:+18005550199" data-click-to-call="true" class="btn-glass w-full">Call (800) 555-0199</a>
+          <a href="sms:+18005550199" data-click-to-text="true" class="btn-glass w-full">Text (800) 555-0199</a>
           <a href="#photo-estimator" class="btn-gold w-full">Instant Photo Quote</a>
         </div>
       </nav>
@@ -1035,10 +1043,16 @@
               </p>
 
               <div class="vault-direct-contact">
-                <a href="tel:+18005550199" class="vault-call-box">
-                  <span class="call-box-label">DIRECT PRINCIPAL ARCHITECT LINE</span>
+                <a href="tel:+18005550199" data-click-to-call="true" class="vault-call-box">
+                  <span class="call-box-label">DIRECT PRINCIPAL ARCHITECT LINE (CLICK TO CALL)</span>
                   <strong class="call-box-phone">(800) 555-0199</strong>
                   <span class="call-box-hours">Mon–Sat • Immediate Feasibility Dispatch</span>
+                </a>
+
+                <a href="sms:+18005550199" data-click-to-text="true" class="vault-call-box vault-sms-box">
+                  <span class="call-box-label">DIRECT SMS ARCHITECTURAL CONCIERGE (CLICK TO TEXT)</span>
+                  <strong class="call-box-phone">(800) 555-0199</strong>
+                  <span class="call-box-hours">24/7 SMS Ballpark &amp; Office-Hours Architect Handover</span>
                 </a>
 
                 <div class="vault-office-box">
@@ -1155,7 +1169,11 @@
         <div class="footer-contact-col">
           <h4>Direct Studio</h4>
           <p>4200 Bellevue Way NE, Suite 300<br />Bellevue, WA 98004</p>
-          <p class="footer-phone"><a href="tel:+18005550199">(800) 555-0199</a></p>
+          <p class="footer-phone">
+            <a href="tel:+18005550199" data-click-to-call="true">(800) 555-0199</a>
+            <span> • </span>
+            <a href="sms:+18005550199" data-click-to-text="true" class="footer-cta-link">Click to Text</a>
+          </p>
           <p><a href="#photo-estimator" class="footer-cta-link">Upload Property Photo for Instant Ballpark →</a></p>
         </div>
       </div>
@@ -1303,7 +1321,7 @@
         <div>
           <div class="bo-title">TIBERIUS AI // AETHER ARCHITECTURAL CONVERSATION ROOM</div>
           <div class="bo-subtitle">
-            Lead Routing: <strong id="boActiveRoutingLabel">Phase 1 · My Accounts (Tiberius)</strong> · Alfred AI Architect Co-Pilot · Lic #AETHEAR884K1
+            Lead Routing: <strong id="boActiveRoutingLabel">Phase 1 · My Accounts (Tiberius)</strong> · SMS Agent: <strong id="boTopSmsModeLabel">✋ Manual (Office Hours / Employee Handover)</strong>
           </div>
         </div>
       </div>
@@ -1318,6 +1336,9 @@
       </div>
 
       <div class="bo-nav-actions">
+        <button type="button" class="bo-return-btn" id="openTelephonyConfigBtn">
+          ⚙️ SMS &amp; Retell Numbers
+        </button>
         <button type="button" class="bo-return-btn" id="closeBackofficeBtn">
           ← Return to Client Remodel Site
         </button>
@@ -1349,7 +1370,7 @@
         <div class="bo-filter-row" role="tablist" aria-label="Filter Homeowner Threads">
           <button type="button" class="bo-filter-pill is-active" data-bo-filter="all">All Threads</button>
           <button type="button" class="bo-filter-pill" data-bo-filter="AI">AI Active</button>
-          <button type="button" class="bo-filter-pill" data-bo-filter="Draft">Needs Approval</button>
+          <button type="button" class="bo-filter-pill" data-bo-filter="Draft">Manual / Approval</button>
           <button type="button" class="bo-filter-pill" data-bo-filter="Booked">3D Scan Booked</button>
         </div>
 
@@ -1366,12 +1387,40 @@
             <span id="boCurrentSub">(425) 891-4420 · Whole-Home Re-Skin + Steel Addition · Cedar Creek, WA</span>
           </div>
 
-          <div class="bo-copilot-modes" role="group" aria-label="Alfred AI Co-Pilot Mode">
-            <button type="button" class="bo-copilot-btn is-active" data-copilot-mode="AI">AI Autopilot</button>
-            <button type="button" class="bo-copilot-btn" data-copilot-mode="Draft">Draft for Architect</button>
-            <button type="button" class="bo-copilot-btn" data-copilot-mode="Human">Principal Only</button>
+          <div class="bo-copilot-modes" role="group" aria-label="SMS AI vs Manual Office Hours Handover Mode">
+            <button type="button" class="bo-copilot-btn is-active" data-copilot-mode="Human" title="Default: Hold incoming texts for human employee / office-hours response">
+              ✋ Manual (Office Hours)
+            </button>
+            <button type="button" class="bo-copilot-btn" data-copilot-mode="AI" title="AI Agent answers incoming SMS messages automatically 24/7">
+              🤖 AI Autopilot (Auto-Reply)
+            </button>
+            <button type="button" class="bo-copilot-btn" data-copilot-mode="Draft" title="AI drafts suggested SMS reply for Principal approval">
+              📝 AI Draft Co-Pilot
+            </button>
           </div>
         </div>
+
+        <!-- Live SMS Handover Mode Status & Inbound Customer SMS Test Bar -->
+        <div class="bo-handover-status-bar is-manual" id="boHandoverBanner">
+          <div class="bo-handover-copy">
+            <strong id="boHandoverTitle">✋ MANUAL / OFFICE HOURS MODE (DEFAULT)</strong>
+            <span id="boHandoverDesc">Incoming customer texts route here for employee/owner reply. Automatic AI SMS replies are paused so your team never gets talked over.</span>
+          </div>
+          <button type="button" class="btn-glass bo-handover-switch-btn" id="boQuickToggleAiBtn">
+            Switch to 🤖 AI Auto-Pilot →
+          </button>
+        </div>
+
+        <form class="bo-inbound-sim-bar" id="boSimulateSmsForm">
+          <span class="bo-sim-label">📲 Test Inbound Customer SMS:</span>
+          <input
+            type="text"
+            id="boSimulateSmsInput"
+            class="bo-sim-input"
+            placeholder="Simulate homeowner text (e.g., 'How much for a steel &amp; glass addition?')"
+          />
+          <button type="submit" class="btn-glass bo-sim-btn">Simulate Incoming Text</button>
+        </form>
 
         <div class="bo-messages-list" id="boMessagesList" aria-live="polite">
           <!-- Populated dynamically by app.js -->
@@ -1380,7 +1429,7 @@
         <!-- Pending AI Draft Approval Card -->
         <div class="bo-ai-draft-banner" id="boAiDraftBanner">
           <div class="bo-draft-top">
-            <span>✨ ALFRED AI SUGGESTED SMS DRAFT (FIXED-PRICE FEASIBILITY VERIFIED)</span>
+            <span>✨ ALFRED AI SUGGESTED SMS DRAFT (READY FOR MANUAL EMPLOYEE / PRINCIPAL REVIEW)</span>
             <span>Principal Architect: Julian Vance, AIA</span>
           </div>
           <p class="bo-draft-text" id="boDraftText">
@@ -1397,14 +1446,14 @@
         </div>
 
         <form class="bo-composer-bar" id="boComposerForm">
-          <label for="boComposerInput" class="sr-only">Reply via SMS or Web as Principal Architect</label>
+          <label for="boComposerInput" class="sr-only">Reply via SMS or Web as Principal Architect or Office Staff</label>
           <input
             type="text"
             id="boComposerInput"
             class="bo-composer-input"
-            placeholder="Reply via SMS/Web as Principal Architect Julian Vance, AIA..."
+            placeholder="Reply manually via SMS (sending a manual reply automatically locks thread to Manual Mode)..."
           />
-          <button type="submit" class="btn-gold bo-send-btn">Send SMS</button>
+          <button type="submit" class="btn-gold bo-send-btn">Send Manual SMS</button>
         </form>
       </section>
 
@@ -1468,10 +1517,57 @@
         </div>
       </aside>
     </div>
+
+    <!-- Telephony & Retell AI / SMS Number Configuration Modal -->
+    <div class="lightbox-backdrop" id="telephonyConfigModal" hidden aria-hidden="true">
+      <div class="lightbox-modal estimate-modal" role="dialog" aria-modal="true" aria-labelledby="telephonyModalTitle">
+        <button type="button" class="lightbox-close-btn" id="closeTelephonyModalBtn" aria-label="Close telephony configuration">
+          ✕
+        </button>
+        <div class="estimate-modal-header">
+          <div class="stage-eyebrow-badge badge-gold">
+            <span class="badge-accent-line"></span>
+            <span>TELEPHONY &amp; AI HANDOVER CONFIGURATION</span>
+          </div>
+          <h3 id="telephonyModalTitle" class="lightbox-title">SMS Agent &amp; Retell AI Voice Routing</h3>
+          <p class="lightbox-subtitle">
+            Visible phone numbers displayed on the website always stay <strong>(800) 555-0199</strong>. Only Click-to-Call (<code>tel:</code>) and Click-to-Text (<code>sms:</code>) buttons and links route to the numbers configured below.
+          </p>
+        </div>
+
+        <form id="telephonyConfigForm" class="vault-booking-form" style="margin-top: 16px;">
+          <div class="vault-field-row">
+            <div class="vault-field">
+              <label for="cfgRetellVoiceInput">Retell AI Voice Agent Number (Click-to-Call <code>tel:</code>)</label>
+              <input type="tel" id="cfgRetellVoiceInput" placeholder="+1 (425) 555-0144" required />
+            </div>
+            <div class="vault-field">
+              <label for="cfgSmsAgentInput">SMS AI Agent Number (Click-to-Text <code>sms:</code>)</label>
+              <input type="tel" id="cfgSmsAgentInput" placeholder="+1 (425) 555-0188" required />
+            </div>
+          </div>
+
+          <div class="vault-field">
+            <label for="cfgDefaultSmsModeSelect">SMS Response &amp; Office-Hours Handover Mode</label>
+            <select id="cfgDefaultSmsModeSelect">
+              <option value="Human">✋ Manual Mode (Default — Hold for Employee / Office Hours Handover)</option>
+              <option value="AI">🤖 AI Auto-Pilot (Answer Incoming Texts Automatically 24/7)</option>
+              <option value="Draft">📝 AI Co-Pilot (Prepare Suggested SMS Draft for Approval)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-gold w-full btn-lg">
+            Save Click-to-Call / Click-to-Text Routing →
+          </button>
+          <div class="vault-booking-feedback" id="telephonyConfigSavedMsg" hidden role="status"></div>
+        </form>
+      </div>
+    </div>
   </section>
 
-  <!-- Three.js Vendor Bundle + Application Controller -->
+  <!-- Three.js Vendor Bundle + Telephony Routing + Application Controller -->
   <script src="vendor/three.min.js"></script>
+  <script src="telephony-config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
