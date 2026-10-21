@@ -131,8 +131,6 @@
         </svg>
         <div class="brand-wordmark">
           <span class="brand-title">AETHER</span>
-          <span class="brand-divider">//</span>
-          <span class="brand-subtitle">ARCHITECTURAL REMODELING</span>
         </div>
       </a>
 
@@ -209,7 +207,7 @@
         <!-- LAYER 2 (z-index: 2): Readability Scrim -->
         <div class="hero-layer-scrim" aria-hidden="true"></div>
 
-        <!-- LAYER 3 (z-index: 3): Staged Foreground HUD Overlays & Manual Drag / Scroll Inspection Controls -->
+        <!-- LAYER 3 (z-index: 3): Static Foreground Hero Content & Manual Scrub Bar -->
         <div class="hero-layer-hud">
           <!-- Top Architectural Status Bar -->
           <div class="hero-top-hud">
@@ -217,107 +215,31 @@
               <span class="hud-pulse-dot"></span>
               <span>Architectural Design-Build • Structural Additions • Whole-Home Transformations</span>
             </div>
-
-            <!-- Interactive Mode Toggle: Scroll-Driven vs. Manual Drag Inspection -->
-            <div class="hud-mode-controls" role="group" aria-label="Transformation Inspection Mode">
-              <button type="button" class="hud-mode-btn is-active" id="mode-scroll-btn" data-mode="scroll">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <rect x="5" y="2" width="14" height="20" rx="7" />
-                  <line x1="12" y1="6" x2="12" y2="10" />
-                </svg>
-                <span>Scroll Inspection</span>
-              </button>
-              <button type="button" class="hud-mode-btn" id="mode-manual-btn" data-mode="manual">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <polyline points="15 18 21 12 15 6" />
-                  <polyline points="9 6 3 12 9 18" />
-                </svg>
-                <span>Manual Drag / Scroll Inspection</span>
-              </button>
-            </div>
           </div>
 
-          <!-- Center/Left 3-Stage Narrative Overlay Container -->
+          <!-- Single Static High-Converting Hero Headline & Dual-CTA Card -->
           <div class="hero-narrative-container">
-            <!-- STAGE 1 (0.00 - 0.33 | The Raw Potential) -->
-            <div class="hero-stage-card is-active" id="hero-stage-1" data-stage="1">
-              <div class="stage-eyebrow-badge">
+            <div class="hero-stage-card is-active" id="hero-stage-1">
+              <div class="stage-eyebrow-badge badge-gold">
                 <span class="badge-accent-line"></span>
-                <span>ARCHITECTURAL DESIGN-BUILD &amp; WHOLE-HOME TRANSFORMATIONS</span>
+                <span>100% TURNKEY EXECUTION • FIXED-PRICE GUARANTEE</span>
               </div>
               <h1 class="hero-headline">See What Your Property Was Meant To Be.</h1>
               <p class="hero-subhead">
-                We turn dated homes and overgrown lots into breathtaking architectural sanctuaries—engineered with 3D precision before a single wall moves.
+                We transform dated homes into breathtaking modern architectural sanctuaries—engineered with 3D precision before a single wall moves.
               </p>
               <div class="hero-cta-group">
                 <a href="#photo-estimator" class="btn-gold btn-lg">Get Instant Photo Estimate</a>
                 <a href="#transformations" class="btn-glass btn-lg">Explore Transformations</a>
               </div>
             </div>
-
-            <!-- STAGE 2 (0.34 - 0.66 | The Structural Re-Engineering) -->
-            <div class="hero-stage-card" id="hero-stage-2" data-stage="2" aria-hidden="true">
-              <div class="stage-eyebrow-badge badge-cyan">
-                <span class="badge-accent-line"></span>
-                <span>3D STRUCTURAL BLUEPRINT &amp; EXTERIOR OVERHAUL</span>
-              </div>
-              <h2 class="hero-headline">Every Roofline, Glazing Span &amp; Stone Terrace Mapped in 3D.</h2>
-              <p class="hero-subhead">
-                Watch structural steel, floor-to-ceiling thermal glass, and custom cedar architecture replace decades of wear—with zero guesswork on cost or timeline.
-              </p>
-              <div class="hero-blueprint-Readout">
-                <div class="blueprint-chip">
-                  <span class="chip-label">STRUCTURAL SPAN</span>
-                  <span class="chip-val">Cantilevered W12 Steel Frame</span>
-                </div>
-                <div class="blueprint-chip">
-                  <span class="chip-label">GLAZING ENVELOPE</span>
-                  <span class="chip-val">Triple-Pane Low-Iron Curtain Wall</span>
-                </div>
-                <div class="blueprint-chip">
-                  <span class="chip-label">SITEWORK</span>
-                  <span class="chip-val">Tiered Basalt &amp; Native Woodland Clearing</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- STAGE 3 (0.67 - 1.00 | The Completed Sanctuary) -->
-            <div class="hero-stage-card" id="hero-stage-3" data-stage="3" aria-hidden="true">
-              <div class="stage-eyebrow-badge badge-gold">
-                <span class="badge-accent-line"></span>
-                <span>100% TURNKEY EXECUTION • FIXED-PRICE GUARANTEE</span>
-              </div>
-              <h2 class="hero-headline">Built Once. Built Forever.</h2>
-              <div class="hero-proof-pill-bar" role="list" aria-label="Verified Performance Metrics">
-                <div class="proof-metric-pill" role="listitem">
-                  <span class="proof-dot"></span>
-                  <span>$2.4M+ Avg Neighborhood Value Lift</span>
-                </div>
-                <div class="proof-metric-pill" role="listitem">
-                  <span class="proof-dot"></span>
-                  <span>Zero Unapproved Change Orders</span>
-                </div>
-                <div class="proof-metric-pill" role="listitem">
-                  <span class="proof-dot"></span>
-                  <span>5.0 ★ Verified Homeowner Rating</span>
-                </div>
-              </div>
-              <!-- Primary Action Card locked for easy click into the AI Estimator below -->
-              <div class="hero-locked-action-card">
-                <div class="locked-card-copy">
-                  <strong>Ready to visualize your property’s structural transformation?</strong>
-                  <span>Upload an exterior or interior photo below for a custom architectural concept &amp; turnkey investment range.</span>
-                </div>
-                <a href="#photo-estimator" class="btn-gold">Launch Instant Photo Estimator →</a>
-              </div>
-            </div>
           </div>
 
-          <!-- Interactive Before/After Scrubbing Handle Overlay (Active in Manual Mode, Mobile, or Direct Drag) -->
+          <!-- Manual Before/After Scrubbing Handle Overlay (Defaults to 100% Completed Remodel) -->
           <div class="hero-interactive-scrubber" id="hero-interactive-scrubber" aria-label="Interactive Before and After Remodel Comparison">
             <div class="scrubber-state-labels">
-              <span class="state-tag state-before" id="hero-tag-before">BEFORE: DATED WOODLAND STRUCTURE</span>
-              <span class="state-tag state-after" id="hero-tag-after">AFTER: MODERN ARCHITECTURAL SANCTUARY</span>
+              <span class="state-tag state-before" id="hero-tag-before">01. ORIGINAL BEFORE</span>
+              <span class="state-tag state-after" id="hero-tag-after">03. MODERN REMODEL / COMPLETED SANCTUARY</span>
             </div>
             <div class="scrubber-slider-wrap">
               <label for="hero-scrub-range" class="sr-only">Scrub architectural transformation progress</label>
@@ -326,21 +248,22 @@
                 id="hero-scrub-range"
                 class="hero-scrub-range"
                 min="0"
-                max="1000"
-                value="0"
+                max="100"
+                step="1"
+                value="100"
                 aria-label="Scrub between original dated woodland home and completed luxury modern architectural remodel"
               />
               <div class="scrubber-progress-rail">
-                <div class="scrubber-progress-fill" id="hero-scrub-fill"></div>
+                <div class="scrubber-progress-fill" id="hero-scrub-fill" style="width: 100%;"></div>
               </div>
               <div class="scrubber-stage-steps">
-                <button type="button" class="stage-step-btn is-active" data-target-progress="0.08">01. Existing Site</button>
+                <button type="button" class="stage-step-btn" data-target-progress="0">01. Original Before</button>
                 <button type="button" class="stage-step-btn" data-target-progress="0.50">02. 3D Structural Scan</button>
-                <button type="button" class="stage-step-btn" data-target-progress="0.96">03. Completed Sanctuary</button>
+                <button type="button" class="stage-step-btn is-active" data-target-progress="1.0">03. Modern Remodel / Completed Sanctuary</button>
               </div>
             </div>
             <div class="desktop-scroll-hint" id="desktop-scroll-hint">
-              <span>Scroll to sweep 3D architectural scanline or drag slider to inspect manually</span>
+              <span>Drag the slider left to inspect the original structure and 3D architectural scanline</span>
             </div>
           </div>
         </div>
@@ -349,29 +272,38 @@
     </section>
 
     <!-- ===================================================================
-         PHASE 3.2: IMMEDIATE AUTHORITY & TRUST STRIP
+         PHASE 3.2: IMMEDIATE AUTHORITY & TRUST STRIP (4-COLUMN SYMMETRICAL GRID)
          =================================================================== -->
     <section class="authority-trust-strip" aria-label="Credentials and Warranties">
       <div class="container">
         <div class="trust-strip-grid">
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">★</span>
-            <span class="trust-text">5.0 ★ Across 140+ Verified Remodels</span>
+            <div class="trust-copy">
+              <strong class="trust-title">★ 5.0 Verified Rating</strong>
+              <span class="trust-sub">140+ Completed Luxury Remodels</span>
+            </div>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">◈</span>
-            <span class="trust-text">Architectural Engineering In-House</span>
+            <div class="trust-copy">
+              <strong class="trust-title">Architectural Engineering</strong>
+              <span class="trust-sub">In-House Structural &amp; HOA Approval</span>
+            </div>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">⬡</span>
-            <span class="trust-text">3D Pre-Construction Walkthrough Included</span>
+            <div class="trust-copy">
+              <strong class="trust-title">3D Digital Walkthrough</strong>
+              <span class="trust-sub">Pre-Construction Twin Included</span>
+            </div>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">✦</span>
-            <span class="trust-text">10-Year Structural Craftsmanship Warranty</span>
+            <div class="trust-copy">
+              <strong class="trust-title">10-Year Structural Warranty</strong>
+              <span class="trust-sub">Guaranteed Fixed-Price Milestones</span>
+            </div>
           </div>
         </div>
       </div>

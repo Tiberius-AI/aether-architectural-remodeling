@@ -9,11 +9,10 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let isMobileViewport = window.innerWidth <= 768;
 
-  // Hero scroll & scrub state
-  let targetProgress = 0;
-  let currentProgress = 0;
-  let inspectionMode = 'scroll'; // 'scroll' | 'manual'
-  let activeStageIndex = 1;
+  // Hero manual scrub state (defaults to 1.0 / 100% Completed Remodel on all viewports)
+  let targetProgress = 1.0;
+  let currentProgress = 1.0;
+  let activeStageIndex = 3;
   let pointerNormX = 0;
   let pointerNormY = 0;
 
@@ -418,7 +417,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
 
       // Draw crisp high-res Before on right of scan wave
       heroCtx.save();
-      heroCtx.globalAlpha = 0.65;
+      heroCtx.globalAlpha = 1.0;
       heroCtx.beginPath();
       heroCtx.rect(scanX, 0, w - scanX, h);
       heroCtx.clip();
@@ -427,7 +426,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
 
       // Draw crisp high-res After on left of scan wave
       heroCtx.save();
-      heroCtx.globalAlpha = 0.82;
+      heroCtx.globalAlpha = 1.0;
       heroCtx.beginPath();
       heroCtx.rect(0, 0, scanX, h);
       heroCtx.clip();
@@ -681,68 +680,21 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   }
 
   /* =========================================================================
-     7. HERO SCROLL CONTROLLER, PINNING & 3-STAGE HUD NARRATIVE
+     7. HERO MANUAL SLIDER CONTROLLER (STATIC HEADLINE + 100% DEFAULT REMODEL)
      ========================================================================= */
-  const heroTrack = document.getElementById('hero-top');
-  const heroStage = document.getElementById('hero-sticky-stage');
-  const stageCards = [
-    document.getElementById('hero-stage-1'),
-    document.getElementById('hero-stage-2'),
-    document.getElementById('hero-stage-3')
-  ];
   const heroScrubRange = document.getElementById('hero-scrub-range');
   const heroScrubFill = document.getElementById('hero-scrub-fill');
   const stageStepBtns = document.querySelectorAll('.stage-step-btn');
-  const modeScrollBtn = document.getElementById('mode-scroll-btn');
-  const modeManualBtn = document.getElementById('mode-manual-btn');
   const topNavbar = document.getElementById('top-navbar');
 
   function applyMobileHeroMode() {
     isMobileViewport = window.innerWidth <= 768;
-    if (isMobileViewport && !MOBILE_SCROLL_SCRUB) {
-      document.body.classList.add('mobile-static-hero');
-      if (heroStage) {
-        heroStage.style.transform = 'none';
-      }
-      // Default mobile split-transformation showcase to 50% so before/after slider is immediately visible
-      if (targetProgress === 0) {
-        targetProgress = 0.50;
-        currentProgress = 0.50;
-      }
-    } else {
-      document.body.classList.remove('mobile-static-hero');
-    }
   }
 
-  function updateScrollTargetFromWindow() {
-    if (!heroTrack || !heroStage) return;
-
+  function updateNavbarScrollState() {
     const scrollY = window.scrollY || window.pageYOffset || 0;
     if (topNavbar) {
       topNavbar.classList.toggle('is-scrolled', scrollY > 24);
-    }
-
-    // Respect mobile static mode when MOBILE_SCROLL_SCRUB === false
-    if ((isMobileViewport && !MOBILE_SCROLL_SCRUB) || prefersReducedMotion) {
-      heroStage.style.transform = 'none';
-      return;
-    }
-
-    const trackHeight = heroTrack.offsetHeight;
-    const viewportHeight = window.innerHeight;
-    const scrollableDistance = Math.max(1, trackHeight - viewportHeight);
-
-    // Pin hero-sticky-stage cleanly even when html, body { overflow-x: hidden } is set
-    const trackRect = heroTrack.getBoundingClientRect();
-    if (heroStage.offsetTop === 0 && trackRect.top <= 0) {
-      const pinOffset = Math.min(scrollableDistance, Math.max(0, -trackRect.top));
-      heroStage.style.transform = `translate3d(0, ${pinOffset}px, 0)`;
-    } else {
-      heroStage.style.transform = 'none';
-    }
-
-    if (inspectionMode === 'scroll') {
-      targetProgress = Math.min(1, Math.max(0, scrollY / scrollableDistance));
     }
   }
 
@@ -754,68 +706,37 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
       nextStage = 2;
     }
 
-    if (nextStage !== activeStageIndex) {
-      activeStageIndex = nextStage;
-      stageCards.forEach((card, idx) => {
-        if (!card) return;
-        const isCurrent = idx + 1 === activeStageIndex;
-        card.classList.toggle('is-active', isCurrent);
-        card.setAttribute('aria-hidden', isCurrent ? 'false' : 'true');
-      });
-    }
-
+    activeStageIndex = nextStage;
     stageStepBtns.forEach((btn, idx) => {
       btn.classList.toggle('is-active', idx + 1 === activeStageIndex);
     });
 
     if (heroScrubRange && document.activeElement !== heroScrubRange) {
-      heroScrubRange.value = String(Math.round(progress * 1000));
+      heroScrubRange.value = String(Math.round(progress * 100));
     }
     if (heroScrubFill) {
       heroScrubFill.style.width = `${(progress * 100).toFixed(1)}%`;
     }
   }
 
-  function setInspectionMode(mode) {
-    inspectionMode = mode;
-    if (modeScrollBtn && modeManualBtn) {
-      modeScrollBtn.classList.toggle('is-active', mode === 'scroll');
-      modeManualBtn.classList.toggle('is-active', mode === 'manual');
-    }
-  }
-
-  if (modeScrollBtn) {
-    modeScrollBtn.addEventListener('click', () => {
-      setInspectionMode('scroll');
-      updateScrollTargetFromWindow();
-    });
-  }
-
-  if (modeManualBtn) {
-    modeManualBtn.addEventListener('click', () => {
-      setInspectionMode('manual');
-      if (targetProgress < 0.1 || targetProgress > 0.9) {
-        targetProgress = 0.5;
-      }
-    });
-  }
-
   if (heroScrubRange) {
+    heroScrubRange.value = '100';
     heroScrubRange.addEventListener('input', (e) => {
-      setInspectionMode('manual');
-      targetProgress = Number(e.target.value) / 1000;
+      targetProgress = Math.min(1, Math.max(0, Number(e.target.value) / 100));
     });
   }
 
   stageStepBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const targetVal = parseFloat(btn.getAttribute('data-target-progress') || '0');
-      setInspectionMode('manual');
-      targetProgress = targetVal;
+      const targetVal = parseFloat(btn.getAttribute('data-target-progress') || '1');
+      targetProgress = Math.min(1, Math.max(0, targetVal));
+      if (heroScrubRange) {
+        heroScrubRange.value = String(Math.round(targetProgress * 100));
+      }
     });
   });
 
-  window.addEventListener('scroll', updateScrollTargetFromWindow, { passive: true });
+  window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
   window.addEventListener('mousemove', (e) => {
     pointerNormX = (e.clientX / window.innerWidth - 0.5) * 2;
     pointerNormY = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -2160,7 +2081,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
       }
     }
 
-    updateScrollTargetFromWindow();
+    updateNavbarScrollState();
     renderHeroTransformationCanvas(currentProgress);
   }
 
@@ -2176,6 +2097,6 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   updateCalculatorReadout();
   initCaseStudySliders();
   initBackofficeRoom();
-  updateScrollTargetFromWindow();
+  updateNavbarScrollState();
   requestAnimationFrame(animateHeroLoop);
 })();

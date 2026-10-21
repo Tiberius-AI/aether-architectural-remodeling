@@ -137,8 +137,6 @@
         </svg>
         <div class="brand-wordmark">
           <span class="brand-title">AETHER</span>
-          <span class="brand-divider">//</span>
-          <span class="brand-subtitle">SUBURBAN ARCHITECTURAL ESTATES</span>
         </div>
       </a>
 
@@ -214,7 +212,7 @@
         <!-- LAYER 2 (z-index: 2): Bright Airy Daylight Readability Scrim -->
         <div class="hero-layer-scrim" aria-hidden="true"></div>
 
-        <!-- LAYER 3 (z-index: 3): Staged Foreground HUD Overlays & Manual Drag / Scroll Inspection Controls -->
+        <!-- LAYER 3 (z-index: 3): Static Foreground Hero Content & Manual Scrub Bar -->
         <div class="hero-layer-hud">
           <!-- Top Architectural Status Bar -->
           <div class="hero-top-hud">
@@ -222,33 +220,14 @@
               <span class="hud-pulse-dot"></span>
               <span>Neighborhood Architectural Transformations • Curb Appeal Modernization • Suburban Home Overhauls</span>
             </div>
-
-            <!-- Interactive Mode Toggle: Scroll-Driven vs. Manual Drag Inspection -->
-            <div class="hud-mode-controls" role="group" aria-label="Transformation Inspection Mode">
-              <button type="button" class="hud-mode-btn is-active" id="mode-scroll-btn" data-mode="scroll">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <rect x="5" y="2" width="14" height="20" rx="7" />
-                  <line x1="12" y1="6" x2="12" y2="10" />
-                </svg>
-                <span>Scroll Inspection</span>
-              </button>
-              <button type="button" class="hud-mode-btn" id="mode-manual-btn" data-mode="manual">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <polyline points="15 18 21 12 15 6" />
-                  <polyline points="9 6 3 12 9 18" />
-                </svg>
-                <span>Manual Drag / Scroll Inspection</span>
-              </button>
-            </div>
           </div>
 
-          <!-- Center/Left 3-Stage Narrative Overlay Container -->
+          <!-- Single Static High-Converting Hero Headline & Dual-CTA Card -->
           <div class="hero-narrative-container">
-            <!-- STAGE 1 (0.00 - 0.33 | Before: Dated 1990 Suburban Residence) -->
-            <div class="hero-stage-card is-active" id="hero-stage-1" data-stage="1">
-              <div class="stage-eyebrow-badge">
+            <div class="hero-stage-card is-active" id="hero-stage-1">
+              <div class="stage-eyebrow-badge badge-gold">
                 <span class="badge-accent-line"></span>
-                <span>AETHER // SUBURBAN TRANSFORMATION DEMO • EST. 1990</span>
+                <span>SUBURBAN ARCHITECTURAL DESIGN-BUILD • FIXED-PRICE GUARANTEE</span>
               </div>
               <h1 class="hero-headline">Re-Imagine the Home You Already Love.</h1>
               <p class="hero-subhead">
@@ -259,69 +238,13 @@
                 <a href="#transformations" class="btn-glass btn-lg">Explore Transformations</a>
               </div>
             </div>
-
-            <!-- STAGE 2 (0.34 - 0.66 | The Glow Sweep: 3D Structural Upgrades & Siding Re-Skinning) -->
-            <div class="hero-stage-card" id="hero-stage-2" data-stage="2" aria-hidden="true">
-              <div class="stage-eyebrow-badge badge-cyan">
-                <span class="badge-accent-line"></span>
-                <span>3D STRUCTURAL UPGRADES &amp; SIDING RE-SKINNING</span>
-              </div>
-              <h2 class="hero-headline">Engineered for Modern Living, Built for Suburban Elegance.</h2>
-              <p class="hero-subhead">
-                Watch dated 1990s brick, faded siding, and weathered rooflines transform into charcoal and white architectural panels, warm natural cedar inserts, dark window casings, and a cantilevered entry.
-              </p>
-              <div class="hero-blueprint-Readout">
-                <div class="blueprint-chip">
-                  <span class="chip-label">FACADE &amp; SIDING</span>
-                  <span class="chip-val">Charcoal/White Panels &amp; Warm Cedar Inserts</span>
-                </div>
-                <div class="blueprint-chip">
-                  <span class="chip-label">WINDOWS &amp; ENTRY</span>
-                  <span class="chip-val">Dark Window Casings &amp; Cantilevered Canopy</span>
-                </div>
-                <div class="blueprint-chip">
-                  <span class="chip-label">CURB APPEAL &amp; ROOF</span>
-                  <span class="chip-val">Standing-Seam Metal Roof &amp; Modern Garage</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- STAGE 3 (0.67 - 1.00 | After: Completed Modern Suburban Residence) -->
-            <div class="hero-stage-card" id="hero-stage-3" data-stage="3" aria-hidden="true">
-              <div class="stage-eyebrow-badge badge-gold">
-                <span class="badge-accent-line"></span>
-                <span>100% TURNKEY EXECUTION • FIXED-PRICE GUARANTEE</span>
-              </div>
-              <h2 class="hero-headline">Architectural Sanctuary. Every Single Day.</h2>
-              <div class="hero-proof-pill-bar" role="list" aria-label="Verified Performance Metrics">
-                <div class="proof-metric-pill" role="listitem">
-                  <span class="proof-dot"></span>
-                  <span>$450k–$1.2M+ Typical Neighborhood Value Lift</span>
-                </div>
-                <div class="proof-metric-pill" role="listitem">
-                  <span class="proof-dot"></span>
-                  <span>Zero Unapproved Change Orders</span>
-                </div>
-                <div class="proof-metric-pill" role="listitem">
-                  <span class="proof-dot"></span>
-                  <span>5.0 ★ Verified Homeowner Rating</span>
-                </div>
-              </div>
-              <div class="hero-locked-action-card">
-                <div class="locked-card-copy">
-                  <strong>Ready to modernize your home’s facade and floorplan without moving?</strong>
-                  <span>Upload a daytime front-yard or exterior photo below for an instant architectural concept &amp; turnkey ballpark.</span>
-                </div>
-                <a href="#photo-estimator" class="btn-gold">Launch Instant Photo Estimator →</a>
-              </div>
-            </div>
           </div>
 
-          <!-- Interactive Before/After Scrubbing Handle Overlay -->
+          <!-- Manual Before/After Scrubbing Handle Overlay (Defaults to 100% Completed Remodel) -->
           <div class="hero-interactive-scrubber" id="hero-interactive-scrubber" aria-label="Interactive Before and After Suburban Remodel Comparison">
             <div class="scrubber-state-labels">
-              <span class="state-tag state-before" id="hero-tag-before">BEFORE: 1990 TRADITIONAL BRICK &amp; SIDING</span>
-              <span class="state-tag state-after" id="hero-tag-after">AFTER: MODERN SUBURBAN ARCHITECTURAL SHOWCASE</span>
+              <span class="state-tag state-before" id="hero-tag-before">01. ORIGINAL BEFORE</span>
+              <span class="state-tag state-after" id="hero-tag-after">03. MODERN REMODEL / COMPLETED SANCTUARY</span>
             </div>
             <div class="scrubber-slider-wrap">
               <label for="hero-scrub-range" class="sr-only">Scrub suburban architectural transformation progress</label>
@@ -330,21 +253,22 @@
                 id="hero-scrub-range"
                 class="hero-scrub-range"
                 min="0"
-                max="1000"
-                value="0"
+                max="100"
+                step="1"
+                value="100"
                 aria-label="Scrub between original 1990s suburban home and completed modern architectural transformation"
               />
               <div class="scrubber-progress-rail">
-                <div class="scrubber-progress-fill" id="hero-scrub-fill"></div>
+                <div class="scrubber-progress-fill" id="hero-scrub-fill" style="width: 100%;"></div>
               </div>
               <div class="scrubber-stage-steps">
-                <button type="button" class="stage-step-btn is-active" data-target-progress="0.08">01. 1990 Original</button>
+                <button type="button" class="stage-step-btn" data-target-progress="0">01. Original Before</button>
                 <button type="button" class="stage-step-btn" data-target-progress="0.50">02. 3D Facade Scan</button>
-                <button type="button" class="stage-step-btn" data-target-progress="0.96">03. Modern Suburban</button>
+                <button type="button" class="stage-step-btn is-active" data-target-progress="1.0">03. Modern Remodel / Completed Sanctuary</button>
               </div>
             </div>
             <div class="desktop-scroll-hint" id="desktop-scroll-hint">
-              <span>Scroll to sweep golden-brass architectural scanline or drag slider to inspect manually</span>
+              <span>Drag the slider left to inspect the original structure and 3D architectural scanline</span>
             </div>
           </div>
         </div>
@@ -353,29 +277,38 @@
     </section>
 
     <!-- ===================================================================
-         IMMEDIATE AUTHORITY & TRUST STRIP
+         IMMEDIATE AUTHORITY & TRUST STRIP (4-COLUMN SYMMETRICAL GRID)
          =================================================================== -->
     <section class="authority-trust-strip" aria-label="Credentials and Warranties">
       <div class="container">
         <div class="trust-strip-grid">
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">★</span>
-            <span class="trust-text">5.0 ★ Across 140+ Verified Remodels</span>
+            <div class="trust-copy">
+              <strong class="trust-title">★ 5.0 Verified Rating</strong>
+              <span class="trust-sub">140+ Completed Luxury Remodels</span>
+            </div>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">◈</span>
-            <span class="trust-text">Architectural Engineering &amp; HOA Approval In-House</span>
+            <div class="trust-copy">
+              <strong class="trust-title">Architectural Engineering</strong>
+              <span class="trust-sub">In-House Structural &amp; HOA Approval</span>
+            </div>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">⬡</span>
-            <span class="trust-text">3D Pre-Construction Walkthrough Included</span>
+            <div class="trust-copy">
+              <strong class="trust-title">3D Digital Walkthrough</strong>
+              <span class="trust-sub">Pre-Construction Twin Included</span>
+            </div>
           </div>
-          <div class="trust-divider" aria-hidden="true"></div>
           <div class="trust-credential-item">
             <span class="trust-icon" aria-hidden="true">✦</span>
-            <span class="trust-text">10-Year Structural Craftsmanship Warranty</span>
+            <div class="trust-copy">
+              <strong class="trust-title">10-Year Structural Warranty</strong>
+              <span class="trust-sub">Guaranteed Fixed-Price Milestones</span>
+            </div>
           </div>
         </div>
       </div>
