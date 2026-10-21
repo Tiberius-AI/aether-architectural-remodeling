@@ -1,0 +1,10 @@
+{
+  "name": "aether-architectural-remodeling",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aether Architectural Remodeling — Flagship 3D/Canvas Architectural Transformation & Luxury Design-Build Platform",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "node -e \"const fs=require('fs'),path=require('path');fs.mkdirSync('dist/assets',{recursive:true});fs.mkdirSync('dist/vendor',{recursive:true});for(const f of ['index.html','styles.css','app.js','before-remodel.webp','after-remodel.webp']){if(fs.existsSync(f))fs.copyFileSync(f,'dist/'+f);}if(fs.existsSync('vendor/three.min.js'))fs.copyFileSync('vendor/three.min.js','dist/vendor/three.min.js');if(fs.existsSync('assets')){for(const a of fs.readdirSync('assets'))fs.copyFileSync('assets/'+a,'dist/assets/'+a);}console.log('Built Aether Architectural Remodeling bundle to dist/');\""
+  }
+}
