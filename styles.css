@@ -1933,9 +1933,16 @@ h4,
 
 .vault-content-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 44px;
   align-items: center;
+}
+
+.vault-info-col,
+.vault-form-col {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 .vault-title {
@@ -1995,6 +2002,10 @@ h4,
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-lg);
   padding: 32px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .vault-form-title {
@@ -2010,6 +2021,8 @@ h4,
 
 .vault-field {
   margin-bottom: 16px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .vault-field label {
@@ -2023,6 +2036,8 @@ h4,
 .vault-field input,
 .vault-field select {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: 48px;
   padding: 0 14px;
   border-radius: var(--radius-sm);
@@ -2030,6 +2045,10 @@ h4,
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: var(--text-primary);
   font-size: 0.92rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .vault-field input:focus,
@@ -2040,8 +2059,9 @@ h4,
 
 .vault-field-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
 .vault-booking-feedback {
@@ -3171,9 +3191,41 @@ body.backoffice-active .backoffice-shell {
     overflow-x: hidden;
   }
 
-  .navbar-inner {
+  .container {
     padding: 0 16px;
-    gap: 10px;
+  }
+
+  /* Prevent grid/flex children from expanding past viewport on narrow mobile screens */
+  .section-header-row > *,
+  .estimator-action-row > *,
+  .bento-capabilities-grid > *,
+  .calculator-2col-grid > *,
+  .calc-secondary-metrics-grid > *,
+  .case-study-grid > *,
+  .process-steps-grid > *,
+  .reviews-cards-grid > *,
+  .vault-content-grid > *,
+  .vault-field-row > *,
+  .footer-top-grid > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Allow buttons to wrap text cleanly on narrow mobile viewports */
+  .btn-gold,
+  .btn-glass,
+  .btn-lg {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+    max-width: 100%;
+    padding: 13px 18px;
+    font-size: 0.92rem;
+  }
+
+  .navbar-inner {
+    padding: 0 14px;
+    gap: 8px;
   }
 
   .navbar-links,
@@ -3192,7 +3244,7 @@ body.backoffice-active .backoffice-shell {
   .nav-bo-switch-btn {
     min-height: 44px;
     padding: 0 12px;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
   }
 
   /* Enforce >= 44x44px touch targets across mobile client site */
@@ -3217,9 +3269,26 @@ body.backoffice-active .backoffice-shell {
 
   .stage-eyebrow-badge,
   .hud-location-pill,
-  .proof-metric-pill {
+  .proof-metric-pill,
+  .section-eyebrow {
     white-space: normal;
     max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .section-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-size: clamp(1.55rem, 6.2vw, 2.05rem);
+    line-height: 1.15;
+  }
+
+  .section-lead {
+    font-size: 0.94rem;
+    line-height: 1.6;
   }
 
   .lightbox-close-btn {
@@ -3264,35 +3333,36 @@ body.backoffice-active .backoffice-shell {
   }
 
   .hero-stage-card {
-    padding: 22px 20px;
+    padding: 20px 18px;
   }
 
   .hero-headline {
-    font-size: clamp(1.75rem, 6.5vw, 2.35rem);
+    font-size: clamp(1.65rem, 6.2vw, 2.25rem);
   }
 
   .hero-subhead {
-    font-size: 0.94rem;
-    margin-bottom: 18px;
+    font-size: 0.92rem;
+    margin-bottom: 16px;
   }
 
   .hero-blueprint-Readout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .hero-locked-action-card {
     flex-direction: column;
     align-items: stretch;
+    padding: 16px;
   }
 
   .section-padding {
-    padding: 68px 0;
+    padding: 56px 0;
   }
 
   .section-header-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 36px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
   }
 
   .trust-strip-grid {
@@ -3306,32 +3376,70 @@ body.backoffice-active .backoffice-shell {
   }
 
   .estimator-single-card {
-    padding: 28px 20px;
+    padding: 24px 16px;
+    border-radius: 18px;
+  }
+
+  .estimator-title {
+    font-size: clamp(1.4rem, 5.6vw, 1.85rem);
   }
 
   .estimator-action-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .upload-trigger-btn {
+    white-space: normal;
+    text-align: center;
+    padding: 8px 14px;
   }
 
   .bento-capabilities-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .bento-card {
+    padding: 20px 16px;
   }
 
   .bento-card.bento-span-2 {
     grid-column: span 1;
   }
 
+  /* Calculator Mobile Optimization */
+  .calculator-2col-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
   .calc-controls-card,
   .calc-output-card {
-    padding: 24px 18px;
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .calc-label-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .calc-viz-header {
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .calc-tier-grid,
   .calc-grade-grid,
   .calc-secondary-metrics-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
+  .metric-huge-value {
+    font-size: clamp(1.65rem, 6.8vw, 2.2rem);
+  }
+
+  /* Case Studies, Process, Reviews, Consultation Vault & Footer Mobile Optimization */
   .case-study-grid,
   .process-steps-grid,
   .reviews-cards-grid,
@@ -3340,16 +3448,185 @@ body.backoffice-active .backoffice-shell {
   .lightbox-body-grid,
   .estimate-modal-grid,
   .footer-top-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .reviews-authority-bento,
+  .case-slider-viewport {
+    height: 210px;
+  }
+
+  .case-badge-overlay {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .case-tag-before,
+  .case-tag-after {
+    font-size: 0.54rem;
+    letter-spacing: 0.04em;
+    padding: 3px 6px;
+    max-width: 48%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .case-card-body {
+    padding: 20px 16px;
+  }
+
+  .case-title {
+    font-size: 1.18rem;
+  }
+
+  .case-metrics-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .cm-label {
+    font-size: 0.64rem;
+  }
+
+  .cm-val {
+    font-size: 0.8rem;
+  }
+
+  .process-steps-grid {
+    gap: 14px;
+  }
+
+  .process-step-card {
+    padding: 20px 16px;
+  }
+
+  .reviews-authority-bento {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .reviews-header-grid {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .reviews-score-badge {
+    width: 100%;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .score-number {
+    font-size: 1.9rem;
+  }
+
+  .review-card {
+    padding: 20px 16px;
+  }
+
+  .review-quote {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .review-author-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* Consultation Vault Mobile Fix (Prevents internal form clipping) */
   .conversion-vault-card {
-    padding: 28px 20px;
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .vault-content-grid {
+    gap: 24px;
+  }
+
+  .vault-title {
+    font-size: clamp(1.5rem, 6vw, 1.95rem);
+    margin-bottom: 12px;
+  }
+
+  .vault-lead {
+    font-size: 0.92rem;
+    margin-bottom: 20px;
+  }
+
+  .vault-call-box,
+  .vault-office-box {
+    padding: 14px 16px;
+  }
+
+  .call-box-phone {
+    font-size: 1.3rem;
+  }
+
+  .vault-booking-form {
+    padding: 20px 14px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .vault-form-title {
+    font-size: 1.18rem;
+  }
+
+  .vault-form-subtitle {
+    font-size: 0.82rem;
+    margin-bottom: 16px;
+  }
+
+  .vault-field input,
+  .vault-field select {
+    height: 46px;
+    padding: 0 12px;
+    font-size: 0.88rem;
+  }
+
+  /* Footer Mobile Optimization */
+  .site-footer {
+    padding: 48px 0 28px;
+  }
+
+  .footer-top-grid {
+    gap: 26px;
+    margin-bottom: 32px;
+  }
+
+  .footer-nav-col ul {
+    gap: 0;
+  }
+
+  .footer-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 20px;
+  }
+
+  .footer-legal-links {
+    flex-wrap: wrap;
+    gap: 6px 16px;
   }
 
   .lightbox-modal {
-    padding: 26px 18px;
+    padding: 22px 16px;
+  }
+
+  .lightbox-metrics-strip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
   }
 
   .cross-pillar-toast {
