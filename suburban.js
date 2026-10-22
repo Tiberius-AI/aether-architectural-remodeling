@@ -871,7 +871,10 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
         modalEstSub.textContent = `Prepared for suburban scope: "${visionVal}"`;
       }
       if (modalSmsStatus) {
-        modalSmsStatus.textContent = `✓ Instant SMS suburban concept & scope packet dispatched to ${phoneVal}.`;
+        modalSmsStatus.textContent =
+          activeCopilotMode === 'AI'
+            ? `✓ Gemini 2.5 Flash AI suburban concept & SMS ballpark dispatched to ${phoneVal}.`
+            : `✓ Suburban scope queued for Office-Hours Architect review (${phoneVal}).`;
       }
 
       if (estimateModal) {
@@ -879,15 +882,54 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
         estimateModal.setAttribute('aria-hidden', 'false');
       }
 
-      addNewBackofficeLead({
-        name: 'New Suburban Photo Inquiry',
-        phone: phoneVal,
-        scope: selectedScopeName,
-        budget: estData.range,
-        lift: estData.lift.replace('Projected Value Lift: ', ''),
-        timeline: estData.timeline.replace('Est. Duration: ', ''),
-        visionText: visionVal
-      });
+      const uploadedBase64 =
+        uploadThumbPreview && !uploadThumbPreview.hidden && uploadThumbImg && uploadThumbImg.src.startsWith('data:image')
+          ? uploadThumbImg.src
+          : null;
+      const savedCfg = window.TiberiusTelephony ? window.TiberiusTelephony.getConfig() : {};
+
+      fetch('/api/ai-estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scope: selectedScopeName,
+          visionText: visionVal,
+          imageBase64: uploadedBase64,
+          geminiApiKey: savedCfg.geminiApiKey || ''
+        })
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((aiData) => {
+          if (aiData && aiData.ok) {
+            if (modalEstRange && aiData.range) modalEstRange.textContent = aiData.range;
+            if (modalEstTimeline && aiData.timeline) modalEstTimeline.textContent = aiData.timeline;
+            if (modalEstLift && aiData.lift) modalEstLift.textContent = aiData.lift;
+            if (modalEstSub && aiData.architecturalNote) {
+              modalEstSub.textContent = aiData.architecturalNote;
+            }
+          }
+          addNewBackofficeLead({
+            name: 'New Suburban Photo Inquiry',
+            phone: phoneVal,
+            scope: selectedScopeName,
+            budget: (aiData && aiData.range) || estData.range,
+            lift: ((aiData && aiData.lift) || estData.lift).replace('Projected Value Lift: ', ''),
+            timeline: ((aiData && aiData.timeline) || estData.timeline).replace('Est. Duration: ', ''),
+            visionText: visionVal,
+            aiDraftOverride: aiData && aiData.smsDraft ? aiData.smsDraft : null
+          });
+        })
+        .catch(() => {
+          addNewBackofficeLead({
+            name: 'New Suburban Photo Inquiry',
+            phone: phoneVal,
+            scope: selectedScopeName,
+            budget: estData.range,
+            lift: estData.lift.replace('Projected Value Lift: ', ''),
+            timeline: estData.timeline.replace('Est. Duration: ', ''),
+            visionText: visionVal
+          });
+        });
     });
   }
 
@@ -1831,7 +1873,9 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
   function addNewBackofficeLead(lead) {
     const newId = 'lead-' + Date.now();
     const isAutoPilot = activeCopilotMode === 'AI';
-    const suggestedReply = `Hi ${lead.name}! I reviewed your "${lead.scope}" inquiry (${lead.budget} turnkey ballpark, ${lead.timeline}). Can we bring our 3D LiDAR facade scanner out this Thursday at 2:00 PM for your complimentary suburban feasibility study?`;
+    const suggestedReply =
+      lead.aiDraftOverride ||
+      `Hi ${lead.name}! I reviewed your "${lead.scope}" inquiry (${lead.budget} turnkey ballpark, ${lead.timeline}). Can we bring our 3D LiDAR facade scanner out this Thursday at 2:00 PM for your complimentary suburban feasibility study?`;
 
     const initialMessages = [
       {
@@ -1845,7 +1889,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
     if (isAutoPilot) {
       initialMessages.push({
         sender: 'ai-reply',
-        meta: 'Alfred AI SMS Agent · 24/7 Auto-Replied via SMS · Just now',
+        meta: 'Alfred AI SMS Agent (Gemini 2.5 Flash) · 24/7 Auto-Replied via SMS · Just now',
         text: suggestedReply
       });
     }
@@ -1875,6 +1919,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
     renderBoActiveThread();
 
     const apiMode = isAutoPilot ? 'ai_autopilot' : activeCopilotMode === 'Draft' ? 'draft' : 'manual';
+    const savedCfg = window.TiberiusTelephony ? window.TiberiusTelephony.getConfig() : {};
     fetch('/api/sms', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1887,13 +1932,22 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
         budget: lead.budget,
         timeline: lead.timeline,
         lift: lead.lift,
-        visionText: lead.visionText
+        visionText: lead.visionText,
+        geminiApiKey: savedCfg.geminiApiKey || ''
       })
-    }).catch(() => {});
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && !isAutoPilot && data.aiDraft && !lead.aiDraftOverride) {
+          newThread.draftText = data.aiDraft;
+          renderBoActiveThread();
+        }
+      })
+      .catch(() => {});
 
     if (toastTitleEl) {
       toastTitleEl.textContent = isAutoPilot
-        ? `🤖 AI Auto-Answered SMS → Back-Office (${lead.scope})`
+        ? `🤖 Gemini 2.5 Flash Auto-Answered SMS → Back-Office`
         : `✋ Queued for Manual Office-Hours Reply → Back-Office`;
     }
     if (toastMessageEl) {
@@ -2037,6 +2091,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
 
         const isAutoPilot = activeCopilotMode === 'AI';
         const apiMode = isAutoPilot ? 'ai_autopilot' : activeCopilotMode === 'Draft' ? 'draft' : 'manual';
+        const savedCfg = window.TiberiusTelephony ? window.TiberiusTelephony.getConfig() : {};
 
         if (!isAutoPilot) {
           thread.status = 'Draft';
@@ -2044,6 +2099,31 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
           thread.draftText = `Hi ${thread.name.split(' ')[0]}! Regarding "${incomingText}": for your ${thread.program} (${thread.budget} turnkey tier), our suburban architectural team can walk the property this Thursday at 2:00 PM for a complimentary 3D LiDAR facade scan. Does that time work?`;
           renderBoThreadList();
           renderBoActiveThread();
+
+          fetch('/api/sms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'inbound_sms',
+              mode: apiMode,
+              name: thread.name,
+              phone: thread.phone,
+              scope: thread.program,
+              budget: thread.budget,
+              timeline: thread.timeline,
+              lift: thread.lift,
+              message: incomingText,
+              geminiApiKey: savedCfg.geminiApiKey || ''
+            })
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              if (data && data.aiDraft) {
+                thread.draftText = data.aiDraft;
+                renderBoActiveThread();
+              }
+            })
+            .catch(() => {});
         } else {
           renderBoThreadList();
           renderBoActiveThread();
@@ -2059,7 +2139,8 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
               budget: thread.budget,
               timeline: thread.timeline,
               lift: thread.lift,
-              message: incomingText
+              message: incomingText,
+              geminiApiKey: savedCfg.geminiApiKey || ''
             })
           })
             .then((r) => (r.ok ? r.json() : null))
@@ -2069,7 +2150,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
                 `Hi ${thread.name.split(' ')[0]}! This is Alfred, Aether's AI Architectural Desk. For your ${thread.program} (${thread.budget} turnkey tier, ${thread.timeline}), we can have Principal Architect ${thread.architect} on-site this Thursday at 2:00 PM for a complimentary 3D LiDAR facade scan. Shall I lock that in?`;
               thread.messages.push({
                 sender: 'ai-reply',
-                meta: 'Alfred AI SMS Agent · 24/7 Auto-Replied via SMS · Just now',
+                meta: 'Alfred AI SMS Agent (Gemini 2.5 Flash) · 24/7 Auto-Replied via SMS · Just now',
                 text: replyText
               });
               thread.draftText = '';
@@ -2164,6 +2245,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
     const cfgRetellVoiceInput = document.getElementById('cfgRetellVoiceInput');
     const cfgSmsAgentInput = document.getElementById('cfgSmsAgentInput');
     const cfgDefaultSmsModeSelect = document.getElementById('cfgDefaultSmsModeSelect');
+    const cfgGeminiKeyInput = document.getElementById('cfgGeminiKeyInput');
     const telephonySavedMsg = document.getElementById('telephonyConfigSavedMsg');
 
     if (openTelephonyBtn && telephonyModal) {
@@ -2172,6 +2254,7 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
           const cfg = window.TiberiusTelephony.getConfig();
           if (cfgRetellVoiceInput) cfgRetellVoiceInput.value = cfg.retellVoiceNumber || '+18304652566';
           if (cfgSmsAgentInput) cfgSmsAgentInput.value = cfg.smsAgentNumber || '+18303608517';
+          if (cfgGeminiKeyInput) cfgGeminiKeyInput.value = cfg.geminiApiKey || '';
         }
         if (cfgDefaultSmsModeSelect) {
           cfgDefaultSmsModeSelect.value = activeCopilotMode;
@@ -2195,18 +2278,20 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
         const newVoice = (cfgRetellVoiceInput && cfgRetellVoiceInput.value.trim()) || '+18304652566';
         const newSms = (cfgSmsAgentInput && cfgSmsAgentInput.value.trim()) || '+18303608517';
         const selectedMode = (cfgDefaultSmsModeSelect && cfgDefaultSmsModeSelect.value) || 'Human';
+        const newGeminiKey = (cfgGeminiKeyInput && cfgGeminiKeyInput.value.trim()) || '';
 
         if (window.TiberiusTelephony) {
           window.TiberiusTelephony.saveConfig({
             retellVoiceNumber: newVoice,
-            smsAgentNumber: newSms
+            smsAgentNumber: newSms,
+            geminiApiKey: newGeminiKey
           });
         }
         setSmsHandoverMode(selectedMode);
 
         if (telephonySavedMsg) {
           telephonySavedMsg.hidden = false;
-          telephonySavedMsg.textContent = `✓ Saved! Click-to-Call links now dial ${newVoice} (Retell AI) and Click-to-Text links now text ${newSms}. All visible numbers on the site remain (800) 555-0199.`;
+          telephonySavedMsg.textContent = `✓ Saved! Click-to-Call → ${newVoice} (Retell AI), Click-to-Text → ${newSms} (Twilio SMS), Gemini 2.5 Flash ready. Visible site numbers remain (800) 555-0199.`;
         }
       });
     }

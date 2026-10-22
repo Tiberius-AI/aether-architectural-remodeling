@@ -1551,9 +1551,14 @@
             <label for="cfgDefaultSmsModeSelect">SMS Response &amp; Office-Hours Handover Mode</label>
             <select id="cfgDefaultSmsModeSelect">
               <option value="Human">✋ Manual Mode (Default — Hold for Employee / Office Hours Handover)</option>
-              <option value="AI">🤖 AI Auto-Pilot (Answer Incoming Texts Automatically 24/7)</option>
-              <option value="Draft">📝 AI Co-Pilot (Prepare Suggested SMS Draft for Approval)</option>
+              <option value="AI">🤖 AI Auto-Pilot (Answer Incoming Texts Automatically 24/7 via Gemini 2.5 Flash)</option>
+              <option value="Draft">📝 AI Co-Pilot (Prepare Suggested Gemini SMS Draft for Approval)</option>
             </select>
+          </div>
+
+          <div class="vault-field">
+            <label for="cfgGeminiKeyInput">Google Gemini API Key (<code>gemini-2.5-flash</code> for SMS &amp; Photo Vision — Optional if set in Vercel Env)</label>
+            <input type="password" id="cfgGeminiKeyInput" placeholder="AIzaSy... (or leave blank to use Vercel GEMINI_API_KEY)" autocomplete="off" />
           </div>
 
           <button type="submit" class="btn-gold w-full btn-lg">

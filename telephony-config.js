@@ -33,6 +33,10 @@
     // 'draft'        -> AI Co-Pilot prepares draft for Principal Architect approval
     smsRoutingMode: 'manual',
 
+    // Gemini Model & Optional Client/Admin Key Override (Server uses process.env.GEMINI_API_KEY first)
+    geminiModel: 'gemini-2.5-flash',
+    geminiApiKey: '',
+
     // Default pre-filled SMS body when a visitor clicks a Click-to-Text link
     defaultSmsBody:
       'Hi Aether Architectural Remodeling, I would like a ballpark estimate and 3D evaluation for my property.'
