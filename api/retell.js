@@ -25,8 +25,8 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       displayPhoneText: '(800) 555-0199',
-      retellVoiceNumber: process.env.RETELL_VOICE_NUMBER || null,
-      smsAgentNumber: process.env.SMS_AGENT_NUMBER || null,
+      retellVoiceNumber: process.env.RETELL_VOICE_NUMBER || '+18304652566',
+      smsAgentNumber: process.env.SMS_AGENT_NUMBER || '+18303608517',
       retellAgentId: process.env.RETELL_AGENT_ID || null,
       defaultSmsRoutingMode: process.env.DEFAULT_SMS_ROUTING_MODE || 'manual'
     });

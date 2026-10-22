@@ -2211,8 +2211,8 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
       openTelephonyBtn.addEventListener('click', () => {
         if (window.TiberiusTelephony) {
           const cfg = window.TiberiusTelephony.getConfig();
-          if (cfgRetellVoiceInput) cfgRetellVoiceInput.value = cfg.retellVoiceNumber || '+18005550199';
-          if (cfgSmsAgentInput) cfgSmsAgentInput.value = cfg.smsAgentNumber || '+18005550199';
+          if (cfgRetellVoiceInput) cfgRetellVoiceInput.value = cfg.retellVoiceNumber || '+18304652566';
+          if (cfgSmsAgentInput) cfgSmsAgentInput.value = cfg.smsAgentNumber || '+18303608517';
         }
         if (cfgDefaultSmsModeSelect) {
           cfgDefaultSmsModeSelect.value = activeCopilotMode;
@@ -2233,8 +2233,8 @@ const MOBILE_SCROLL_SCRUB = false; // Set to true to enable damped scroll-scrubb
     if (telephonyForm) {
       telephonyForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const newVoice = (cfgRetellVoiceInput && cfgRetellVoiceInput.value.trim()) || '+18005550199';
-        const newSms = (cfgSmsAgentInput && cfgSmsAgentInput.value.trim()) || '+18005550199';
+        const newVoice = (cfgRetellVoiceInput && cfgRetellVoiceInput.value.trim()) || '+18304652566';
+        const newSms = (cfgSmsAgentInput && cfgSmsAgentInput.value.trim()) || '+18303608517';
         const selectedMode = (cfgDefaultSmsModeSelect && cfgDefaultSmsModeSelect.value) || 'Human';
 
         if (window.TiberiusTelephony) {

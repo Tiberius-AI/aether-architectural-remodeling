@@ -5,8 +5,8 @@
  * IMPORTANT RULE:
  * - Visible display phone numbers on the website ALWAYS remain "(800) 555-0199".
  * - Only click-to-call (`tel:`) and click-to-text (`sms:`) links/buttons route
- *   to `retellVoiceNumber` and `smsAgentNumber`.
- * - `defaultSmsRoutingMode` is set to `'manual'` ("Manual / Office Hours Handover")
+ *   to `retellVoiceNumber` (+18304652566) and `smsAgentNumber` (+18303608517).
+ * - `smsRoutingMode` is set to `'manual'` ("Manual / Office Hours Handover")
  *   by default so employees or the owner can handle back-office communication
  *   during office hours, and can be toggled to `'ai_autopilot'` when 24/7
  *   automatic AI SMS responses are desired.
@@ -15,19 +15,17 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY_CONFIG = 'tiberius_aether_telephony_v1';
+  const STORAGE_KEY_CONFIG = 'tiberius_aether_telephony_v2';
 
   const DEFAULT_CONFIG = {
     // Visible display text on the website (NEVER changed in page copy)
     displayPhoneText: '(800) 555-0199',
 
     // Click-to-Call destination -> Retell AI Voice Agent Number (E.164 format)
-    // Update this with your live Retell AI phone number (e.g., '+14255550144')
-    retellVoiceNumber: '+18005550199',
+    retellVoiceNumber: '+18304652566',
 
-    // Click-to-Text destination -> SMS AI Agent Number (E.164 format)
-    // Update this with your live SMS number (e.g., '+14255550188')
-    smsAgentNumber: '+18005550199',
+    // Click-to-Text destination -> Twilio SMS AI Agent Number (E.164 format)
+    smsAgentNumber: '+18303608517',
 
     // Default SMS Routing Mode:
     // 'manual'       -> Manual / Office Hours Employee Handover (DEFAULT: AI does NOT auto-reply; holds for staff)
@@ -92,14 +90,14 @@
     const encodedBody = encodeURIComponent(activeCfg.defaultSmsBody || DEFAULT_CONFIG.defaultSmsBody);
 
     // 1. All Click-to-Call links (`a[href^="tel:"]` or `[data-click-to-call]`)
-    // Route href to Retell AI Voice Agent number while leaving visible text untouched
+    // Route href to Retell AI Voice Agent number (+18304652566) while leaving visible text untouched
     document.querySelectorAll('a[href^="tel:"], a[data-click-to-call]').forEach((el) => {
       el.setAttribute('href', `tel:${voiceE164}`);
       el.setAttribute('data-retell-voice-target', voiceE164);
     });
 
     // 2. All Click-to-Text links (`a[href^="sms:"]` or `[data-click-to-text]`)
-    // Route href to SMS Agent number while leaving visible text untouched
+    // Route href to Twilio SMS Agent number (+18303608517) while leaving visible text untouched
     document.querySelectorAll('a[href^="sms:"], a[data-click-to-text]').forEach((el) => {
       const customBody = el.getAttribute('data-sms-body');
       const bodyParam = customBody ? encodeURIComponent(customBody) : encodedBody;
@@ -121,18 +119,6 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       applyClickTargetsToDom(loadConfig());
-      // Fetch server-side env overrides if configured on Vercel
-      fetch('/api/retell')
-        .then((r) => (r.ok ? r.json() : null))
-        .then((data) => {
-          if (data && (data.retellVoiceNumber || data.smsAgentNumber)) {
-            const merged = {};
-            if (data.retellVoiceNumber) merged.retellVoiceNumber = data.retellVoiceNumber;
-            if (data.smsAgentNumber) merged.smsAgentNumber = data.smsAgentNumber;
-            saveConfig(merged);
-          }
-        })
-        .catch(() => {});
     });
   } else {
     applyClickTargetsToDom(currentConfig);

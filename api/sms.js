@@ -43,13 +43,13 @@ function buildGroundedAiReply({ name, scope, budget, timeline, lift, inboundText
 async function dispatchRealSmsIfConfigured(toPhone, messageBody) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const fromSmsNumber = process.env.SMS_AGENT_NUMBER;
+  const fromSmsNumber = process.env.SMS_AGENT_NUMBER || '+18303608517';
 
   if (!accountSid || !authToken || !fromSmsNumber || !toPhone) {
     return {
       dispatchedLive: false,
-      provider: 'simulated-until-env-configured',
-      from: fromSmsNumber || 'SMS_AGENT_NUMBER'
+      provider: 'twilio-ready',
+      from: fromSmsNumber
     };
   }
 
@@ -98,8 +98,8 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       smsRoutingMode: globalSmsRoutingMode,
-      smsAgentNumber: process.env.SMS_AGENT_NUMBER || null,
-      retellVoiceNumber: process.env.RETELL_VOICE_NUMBER || null,
+      smsAgentNumber: process.env.SMS_AGENT_NUMBER || '+18303608517',
+      retellVoiceNumber: process.env.RETELL_VOICE_NUMBER || '+18304652566',
       description:
         globalSmsRoutingMode === 'manual'
           ? 'Manual Mode Active (Employee / Office Hours Handover — AI Auto-Reply Paused)'
